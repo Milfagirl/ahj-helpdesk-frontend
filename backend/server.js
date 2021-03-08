@@ -1,3 +1,4 @@
+var moment = require('moment');
 const http = require('http');
 const Koa = require('koa');
 const Router = require('koa-router');
@@ -10,47 +11,94 @@ app.use(koaBody({
   json: true,
 }));
 
+moment.locale('ru')
 const router = new Router();
 
 let nextId = 1;
-const ticket = [
+let ticket = [
   {
-    id: nextId++, name: 'Билет 1', status: true, created: 'date pm',
+    id: nextId++, text: 'Поменять краску в принтере', date: '10.03.2019', time: '08:40',
   },
   {
-    id: nextId++, name: 'Билет 2', status: true, created: 'date pm',
+    id: nextId++, text: 'Переустановить Wind', date: '15.03.2019', time: '12:35',
   },
+  {
+    id: nextId++, text: 'Установить обновление', date: '15.03.2019', time: '12:40',
+  }
 ];
 nextId = 1;
-const ticketFull = [
+let ticketFull = [
   {
-    id: nextId++, name: 'Билет 1', description: 'Хоккей', status: true, created: 'date pm',
+    id: nextId++, fullText: 'Поменять краску в принтере', date: '10.03.2019', time: '08:40',
   },
   {
-    id: nextId++, name: 'Билет 2', description: 'Театр', status: true, created: 'date pm',
+    id: nextId++, fullText: 'Переустановить Wind', date: '15.03.2019', time: '12:35',
   },
+  {
+    id: nextId++, fullText: 'Установить обновление', date: '15.03.2019', time: '12:40',
+  }
 ];
 
 router.get('/allTickets', async (ctx) => {
-  const { id } = ctx.request.query;
-  if (!id) {
-    ctx.response.body = ticket;
-  } else {
-    ctx.response.body = ticketFull.filter((o) => o.id === Number(id));
-  }
+  ctx.response.body = ticket;
 });
 
 router.post('/setTickets', async (ctx) => {
+  const date = moment().format('L')
+  const time = moment().format('LT')
   const {
-    name, description, status, created,
+    text, fullText
   } = ctx.request.body;
-  const id = nextId++;
+  const id = ticket.length+ 1;
   ticket.push({
-    id, name, status, created,
+    id, text, date, time
   });
   ticketFull.push({
-    id, name, description, status, created,
+    id, fullText, date, time
   });
+  ctx.response.body = ticketFull;
+});
+
+router.get(`/allTickets/:id`, async (ctx) => {
+  const id = Number(ctx.params.id);
+  const text = (ticket.find((o) => o.id === id)).text
+  const fullText = (ticketFull.find((o) => o.id === id)).fullText
+  ctx.response.body = { text, fullText };
+});
+
+router.post('/setTickets/:id', async (ctx) => {
+  const date = moment().format('L')
+  const time = moment().format('LT')
+  const {
+    text, fullText
+  } = ctx.request.body;
+  const id = ctx.params.id
+  ticket.map((o) => {
+    if (o.id === Number(id)) {
+      o.text = text
+      o.date = date
+      o.time = time
+    }
+  })
+  ticketFull.map((o) => {
+    if (o.id === Number(id)) {
+      o.fullTtext = fullText
+      o.date = date
+      o.time = time
+    }
+  })
+  ctx.response.body = ticketFull;
+});
+
+router.post('/deleteTicket/:id', async (ctx) => {
+  const id = Number(ctx.params.id)
+
+  ticket = ticket.filter((arr) => arr.id !== id);
+  nextId = 1
+  ticket.map(arr => arr.id = nextId++)
+  ticketFull = ticketFull.filter((arr) => arr.id !== id);
+  nextId = 1
+  ticketFull.map(arr => arr.id = ticketFull.indexOf(arr) + 1)
   ctx.response.body = ticketFull;
 });
 

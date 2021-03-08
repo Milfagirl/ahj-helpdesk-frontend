@@ -40,6 +40,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "core-js": "^3.9.0",
     "css-loader": "^4.2.2",
     "forever": "^3.0.4",
@@ -47,6 +48,7 @@
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
     "mini-css-extract-plugin": "^0.11.0",
+    "moment": "^2.29.1",
     "url-loader": "^4.1.0",
     "webpack-merge": "^5.1.3"
   }
