@@ -18,6 +18,20 @@ export const ajaxGetTicket = () => {
     })
 }
 
+export const ajaxGetFullTicket = (id) => {
+  axios.get(`http://localhost:7070/fullTickets/${id}`)
+    .then((response) => {
+      data.getFullTicket = response.data
+      const elem = document.querySelectorAll(`[data-p="${data.getSelected}"]`)[0]
+      const newElem = `<p class='full'>${data.getFullTicket.fullText}</p>`
+      elem.insertAdjacentHTML('beforeend', newElem)
+      data.getSelected = ''
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
 export const ajaxNewTicket = (formData) => {
   axios({
     method: 'post',
@@ -25,7 +39,7 @@ export const ajaxNewTicket = (formData) => {
     data: JSON.stringify(formData),
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Credentials': true },
   })
-    .then((response) => {
+    .then(() => {
       modal.style.display = 'none'
       ajaxGetTicket()
     })
@@ -40,8 +54,10 @@ export const ajaxInfo = (id) => {
       console.log(response.data)
       data.getText = response.data.text
       data.getFullText = response.data.fullText
-      document.forms['formAdd'].text.value = data.getText
-      document.forms['formAdd'].fullText.value = data.getFullText
+      console.log(data.getText)
+      console.log(data.getFullText)
+      document.forms.formAdd.text.value = data.getText
+      document.forms.formAdd.fullText.value = data.getFullText
     })
     .catch((error) => {
       console.log(error)
@@ -55,7 +71,7 @@ export const ajaxTicketChange = (id, formData) => {
     data: JSON.stringify(formData),
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Credentials': true },
   })
-    .then((response) => {
+    .then(() => {
       modal.style.display = 'none'
       data.getSelected = ''
       ajaxGetTicket()
@@ -71,7 +87,7 @@ export const ajaxDeleteTicket = (id) => {
     url: `http://localhost:7070/deleteTicket/${id}`,
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Credentials': true },
   })
-    .then((response) => {
+    .then(() => {
       modal.style.display = 'none'
       ajaxGetTicket()
     })

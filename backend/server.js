@@ -29,13 +29,13 @@ let ticket = [
 nextId = 1;
 let ticketFull = [
   {
-    id: nextId++, fullText: 'Поменять краску в принтере', date: '10.03.2019', time: '08:40',
+    id: nextId++, fullText: 'Поменять краску в принтере full', date: '10.03.2019', time: '08:40',
   },
   {
-    id: nextId++, fullText: 'Переустановить Wind', date: '15.03.2019', time: '12:35',
+    id: nextId++, fullText: 'Переустановить Wind full', date: '15.03.2019', time: '12:35',
   },
   {
-    id: nextId++, fullText: 'Установить обновление', date: '15.03.2019', time: '12:40',
+    id: nextId++, fullText: 'Установить обновление full', date: '15.03.2019', time: '12:40',
   }
 ];
 
@@ -66,12 +66,18 @@ router.get(`/allTickets/:id`, async (ctx) => {
   ctx.response.body = { text, fullText };
 });
 
+router.get(`/fullTickets/:id`, async (ctx) => {
+  const id = Number(ctx.params.id);
+  ctx.response.body = ticketFull.find((arr) => arr.id === id);
+});
+
 router.post('/setTickets/:id', async (ctx) => {
   const date = moment().format('L')
   const time = moment().format('LT')
   const {
     text, fullText
   } = ctx.request.body;
+  console.log(text, '', fullText)
   const id = ctx.params.id
   ticket.map((o) => {
     if (o.id === Number(id)) {
@@ -82,11 +88,12 @@ router.post('/setTickets/:id', async (ctx) => {
   })
   ticketFull.map((o) => {
     if (o.id === Number(id)) {
-      o.fullTtext = fullText
+      o.fullText = fullText
       o.date = date
       o.time = time
     }
   })
+  console.log(ticketFull)
   ctx.response.body = ticketFull;
 });
 

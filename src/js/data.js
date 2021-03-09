@@ -2,6 +2,7 @@
 class Data {
   constructor() {
     this.ticket = [];
+    this.fullTicket = []
     this.selected = 0;
     this.text = ''
     this.fullText = ''
@@ -15,6 +16,14 @@ class Data {
 
   get getTicket() {
     return this.ticket;
+  }
+
+  set getFullTicket(value) {
+    this.fullTicket = value;
+  }
+
+  get getFullTicket() {
+    return this.fullTicket;
   }
 
   set getSelected(value) {
